@@ -1,769 +1,359 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Pages</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── Design tokens ─────────────────────────────────────── */
+    :root {
+      --bg:        #0b0e13;
+      --surface:   #13181f;
+      --border:    #1e2630;
+      --border-h:  #c9a84c;
+      --text-main: #e8e2d6;
+      --text-dim:  #7a8394;
+      --gold:      #c9a84c;
+      --gold-glow: rgba(201,168,76,.18);
+      --red:       #c94c4c;
+    }
 
-  :root {
-    --ink: #1a1510;
-    --parchment: #faf6ee;
-    --cream: #f2ead8;
-    --gold: #b8860b;
-    --gold-light: #d4a017;
-    --rust: #8b3a2a;
-    --teal: #1a6b6b;
-    --slate: #3d4a5c;
-    --muted: #7a7060;
-    --border: #d6c9a8;
-    --present: #1a6b6b;
-    --past: #8b3a2a;
-    --future: #2a4a8b;
-    --present-bg: #e8f4f4;
-    --past-bg: #f4ebe8;
-    --future-bg: #e8ecf4;
-  }
+    /* ─── Reset / Base ──────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
 
-  body {
-    font-family: 'Crimson Pro', Georgia, serif;
-    background: var(--parchment);
-    color: var(--ink);
-    font-size: 17px;
-    line-height: 1.65;
-    min-height: 100vh;
-  }
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      font-family: 'DM Mono', monospace;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
 
-  /* ── Header ── */
-  header {
-    background: var(--ink);
-    padding: 40px 48px 32px;
-    position: relative;
-    overflow: hidden;
-  }
-  header::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
-  }
-  .header-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 12px;
-  }
-  header h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(28px, 4vw, 44px);
-    font-weight: 700;
-    color: var(--parchment);
-    line-height: 1.1;
-    margin-bottom: 10px;
-  }
-  header h1 em {
-    color: var(--gold-light);
-    font-style: italic;
-  }
-  .header-sub {
-    font-size: 15px;
-    color: #a09070;
-    font-style: italic;
-    font-weight: 300;
-  }
-  .tense-count {
-    position: absolute;
-    right: 48px;
-    top: 40px;
-    font-family: 'Playfair Display', serif;
-    font-size: 72px;
-    font-weight: 700;
-    color: rgba(184,134,11,0.15);
-    line-height: 1;
-    user-select: none;
-  }
+    /* ─── Subtle grid overlay ───────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+      z-index: 0;
+    }
 
-  /* ── Navigation ── */
-  nav {
-    background: var(--cream);
-    border-bottom: 1px solid var(--border);
-    padding: 0 48px;
-    display: flex;
-    gap: 0;
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-  nav::-webkit-scrollbar { display: none; }
-  .nav-btn {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 14px 20px;
-    border: none;
-    background: none;
-    cursor: pointer;
-    color: var(--muted);
-    border-bottom: 2px solid transparent;
-    transition: all 0.2s;
-    white-space: nowrap;
-  }
-  .nav-btn:hover { color: var(--ink); }
-  .nav-btn.active-present { color: var(--present); border-bottom-color: var(--present); }
-  .nav-btn.active-past { color: var(--past); border-bottom-color: var(--past); }
-  .nav-btn.active-future { color: var(--future); border-bottom-color: var(--future); }
-  .nav-btn.active-all { color: var(--gold); border-bottom-color: var(--gold); }
+    /* ─── Layout wrapper ────────────────────────────────────── */
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 80px 24px 120px;
+    }
 
-  /* ── Main layout ── */
-  main {
-    padding: 40px 48px 64px;
-    max-width: 960px;
-    margin: 0 auto;
-  }
+    /* ─── Header ────────────────────────────────────────────── */
+    header {
+      margin-bottom: 72px;
+      animation: fadeUp .7s ease both;
+    }
 
-  /* ── Section heading ── */
-  .time-section { margin-bottom: 48px; }
-  .time-heading {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 24px;
-  }
-  .time-rule {
-    flex: 1;
-    height: 1px;
-  }
-  .time-heading h2 {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
-  .present .time-rule { background: var(--present); }
-  .present .time-heading h2 { color: var(--present); }
-  .past .time-rule { background: var(--past); }
-  .past .time-heading h2 { color: var(--past); }
-  .future .time-rule { background: var(--future); }
-  .future .time-heading h2 { color: var(--future); }
+    .header-eyebrow {
+      font-size: .65rem;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
 
-  /* ── Tense Card ── */
-  .card {
-    border: 1px solid var(--border);
-    border-radius: 2px;
-    margin-bottom: 16px;
-    overflow: hidden;
-    transition: box-shadow 0.2s;
-    background: white;
-  }
-  .card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+    header h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.8rem, 6vw, 4.4rem);
+      font-weight: 300;
+      line-height: 1.08;
+      letter-spacing: -.01em;
+      color: var(--text-main);
+    }
 
-  .card-header {
-    display: flex;
-    align-items: stretch;
-    cursor: pointer;
-    user-select: none;
-  }
-  .card-number {
-    font-family: 'Playfair Display', serif;
-    font-size: 28px;
-    font-weight: 700;
-    color: white;
-    width: 56px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    font-style: italic;
-  }
-  .present .card-number { background: var(--present); }
-  .past .card-number { background: var(--past); }
-  .future .card-number { background: var(--future); }
+    header h1 em {
+      font-style: italic;
+      color: var(--gold);
+    }
 
-  .card-title-area {
-    flex: 1;
-    padding: 16px 20px;
-    background: var(--cream);
-  }
-  .card-name {
-    font-family: 'Playfair Display', serif;
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--ink);
-    margin-bottom: 2px;
-  }
-  .card-structure {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    color: var(--muted);
-  }
-  .card-structure span {
-    font-weight: 500;
-  }
-  .present .card-structure span { color: var(--present); }
-  .past .card-structure span { color: var(--past); }
-  .future .card-structure span { color: var(--future); }
+    .header-rule {
+      margin-top: 28px;
+      height: 1px;
+      background: linear-gradient(90deg, var(--gold) 0%, transparent 60%);
+      width: 100%;
+    }
 
-  .card-toggle {
-    display: flex;
-    align-items: center;
-    padding: 0 20px;
-    background: var(--cream);
-    font-size: 18px;
-    color: var(--muted);
-    transition: transform 0.25s;
-  }
+    .header-sub {
+      margin-top: 18px;
+      font-size: .75rem;
+      color: var(--text-dim);
+      letter-spacing: .05em;
+    }
 
-  .card-body {
-    display: none;
-    padding: 24px 28px;
-    border-top: 1px solid var(--border);
-  }
-  .card-body.open { display: block; }
-  .card-toggle.open { transform: rotate(180deg); }
+    /* ─── Section label ─────────────────────────────────────── */
+    .section-label {
+      font-size: .6rem;
+      letter-spacing: .35em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
 
-  /* Card body internals */
-  .uses-heading {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 10px;
-  }
-  .use-item {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 8px;
-    font-size: 16px;
-  }
-  .use-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    margin-top: 9px;
-    flex-shrink: 0;
-  }
-  .present .use-dot { background: var(--present); }
-  .past .use-dot { background: var(--past); }
-  .future .use-dot { background: var(--future); }
+    /* ─── Cards grid ────────────────────────────────────────── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
 
-  .use-text em {
-    font-style: italic;
-    color: var(--slate);
-  }
+    /* ─── Card ──────────────────────────────────────────────── */
+    .card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 28px 26px 24px;
+      text-decoration: none;
+      overflow: hidden;
+      transition: border-color .25s, transform .25s, box-shadow .25s;
+      animation: fadeUp .6s ease both;
+    }
 
-  .divider {
-    height: 1px;
-    background: var(--border);
-    margin: 16px 0;
-  }
+    /* stagger children */
+    .card:nth-child(1)  { animation-delay: .05s; }
+    .card:nth-child(2)  { animation-delay: .10s; }
+    .card:nth-child(3)  { animation-delay: .15s; }
+    .card:nth-child(4)  { animation-delay: .20s; }
+    .card:nth-child(5)  { animation-delay: .25s; }
+    .card:nth-child(6)  { animation-delay: .30s; }
+    .card:nth-child(7)  { animation-delay: .35s; }
+    .card:nth-child(8)  { animation-delay: .40s; }
+    .card:nth-child(9)  { animation-delay: .45s; }
+    .card:nth-child(10) { animation-delay: .50s; }
 
-  .signal-words {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 8px;
-  }
-  .signal-tag {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    padding: 3px 10px;
-    border-radius: 2px;
-    border: 1px solid;
-  }
-  .present .signal-tag { color: var(--present); border-color: var(--present); background: var(--present-bg); }
-  .past .signal-tag { color: var(--past); border-color: var(--past); background: var(--past-bg); }
-  .future .signal-tag { color: var(--future); border-color: var(--future); background: var(--future-bg); }
+    /* gold corner accent */
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px;
+      height: 0;
+      background: var(--gold);
+      transition: height .3s ease;
+    }
 
-  .trap-box {
-    margin-top: 16px;
-    border-left: 3px solid var(--gold);
-    padding: 12px 16px;
-    background: #fdf8ec;
-    border-radius: 0 2px 2px 0;
-  }
-  .trap-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 8px;
-  }
-  .trap-row { font-size: 15px; margin-bottom: 4px; }
-  .trap-wrong { color: var(--rust); }
-  .trap-right { color: var(--teal); }
+    /* glow on hover */
+    .card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--gold-glow);
+      opacity: 0;
+      transition: opacity .3s;
+      pointer-events: none;
+    }
 
-  /* ── Summary table ── */
-  .summary-section {
-    margin-top: 48px;
-    padding-top: 32px;
-    border-top: 2px solid var(--ink);
-  }
-  .summary-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 26px;
-    font-weight: 700;
-    margin-bottom: 24px;
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-  }
-  thead tr {
-    background: var(--ink);
-    color: var(--parchment);
-  }
-  thead th {
-    padding: 12px 16px;
-    text-align: left;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    font-weight: 500;
-  }
-  tbody tr { border-bottom: 1px solid var(--border); }
-  tbody tr:hover { background: var(--cream); }
-  tbody td { padding: 10px 16px; vertical-align: middle; }
-  .t-num { font-family: 'Playfair Display', serif; font-weight: 700; font-style: italic; font-size: 18px; width: 36px; }
-  .t-name { font-weight: 600; }
-  .t-present { color: var(--present); }
-  .t-past { color: var(--past); }
-  .t-future { color: var(--future); }
-  .t-signal { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); }
-  .t-core { font-style: italic; color: var(--slate); }
+    .card:hover {
+      border-color: var(--border-h);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(0,0,0,.45);
+    }
+    .card:hover::before { height: 100%; }
+    .card:hover::after  { opacity: 1; }
 
-  /* ── Hidden ── */
-  .hidden { display: none; }
-</style>
+    /* card number badge */
+    .card-num {
+      font-size: .6rem;
+      letter-spacing: .2em;
+      color: var(--text-dim);
+      margin-bottom: 14px;
+    }
+
+    .card-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.35rem;
+      font-weight: 400;
+      color: var(--text-main);
+      line-height: 1.2;
+      flex: 1;
+      margin-bottom: 10px;
+      transition: color .2s;
+    }
+    .card:hover .card-title { color: var(--gold); }
+
+    .card-desc {
+      font-size: .68rem;
+      color: var(--text-dim);
+      line-height: 1.6;
+      letter-spacing: .02em;
+      margin-bottom: 20px;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border);
+      padding-top: 14px;
+    }
+
+    .card-tag {
+      font-size: .58rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    .card-arrow {
+      width: 22px;
+      height: 22px;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-dim);
+      font-size: .7rem;
+      transition: border-color .2s, color .2s, transform .2s;
+    }
+    .card:hover .card-arrow {
+      border-color: var(--gold);
+      color: var(--gold);
+      transform: rotate(45deg);
+    }
+
+    /* ─── Empty state card ──────────────────────────────────── */
+    .card.empty {
+      border-style: dashed;
+      opacity: .45;
+      pointer-events: none;
+      justify-content: center;
+      align-items: center;
+      min-height: 160px;
+      text-align: center;
+    }
+    .card.empty::before, .card.empty::after { display: none; }
+    .card.empty .card-title {
+      font-size: 1rem;
+      color: var(--text-dim);
+      font-style: italic;
+    }
+
+    /* ─── Footer ────────────────────────────────────────────── */
+    footer {
+      margin-top: 96px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      font-size: .6rem;
+      letter-spacing: .15em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+
+    footer span { color: var(--gold); }
+
+    /* ─── Animations ────────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── Responsive ────────────────────────────────────────── */
+    @media (max-width: 480px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
+<div class="wrapper">
 
-<header>
-  <div class="tense-count">12</div>
-  <div class="header-label">TOEFL Grammar Reference · American English</div>
-  <h1>The <em>Twelve</em> Verb Tenses</h1>
-  <p class="header-sub">A complete reference guide — structure, usage, signal words, and common errors for French speakers.</p>
-</header>
+  <!-- ══════════ HEADER ══════════════════════════════════════ -->
+  <header>
+    <p class="header-eyebrow">Peter &mdash; Generated Pages</p>
+    <h1>My <em>Pages</em><br>Collection</h1>
+    <div class="header-rule"></div>
+    <p class="header-sub">All HTML pages in this folder &mdash; updated manually as new pages are added</p>
+  </header>
 
-<nav>
-  <button class="nav-btn active-all" onclick="filter('all', this)">All Tenses</button>
-  <button class="nav-btn" onclick="filter('present', this)">Present ×4</button>
-  <button class="nav-btn" onclick="filter('past', this)">Past ×4</button>
-  <button class="nav-btn" onclick="filter('future', this)">Future ×4</button>
-</nav>
+  <!-- ══════════ CARDS GRID ══════════════════════════════════ -->
 
-<main>
+  <!--
+    ╔══════════════════════════════════════════════════════════╗
+    ║  HOW TO ADD A NEW PAGE                                   ║
+    ║  1. Copy one <a class="card"> block below                ║
+    ║  2. Set href="your-file.html"                            ║
+    ║  3. Update the title, description, and tag               ║
+    ║  4. Update the card number (01, 02, 03…)                 ║
+    ╚══════════════════════════════════════════════════════════╝
+  -->
 
-<!-- ═══════════════════ PRESENT ═══════════════════ -->
-<div class="time-section present" id="section-present">
-  <div class="time-heading">
-    <div class="time-rule"></div>
-    <h2>Present</h2>
-    <div class="time-rule"></div>
-  </div>
+  <p class="section-label">Pages</p>
 
-  <!-- 1 -->
-  <div class="card present">
-    <div class="card-header" onclick="toggle(this)">
-      <div class="card-number">1</div>
-      <div class="card-title-area">
-        <div class="card-name">Simple Present</div>
-        <div class="card-structure"><span>subject</span> + base verb (+ <span>‑s/‑es</span> for he/she/it)</div>
-      </div>
-      <div class="card-toggle">▾</div>
-    </div>
-    <div class="card-body">
-      <div class="uses-heading">Primary Uses</div>
-      <div class="use-item"><div class="use-dot"></div><div class="use-text">Habits &amp; routines — <em>She studies every morning.</em></div></div>
-      <div class="use-item"><div class="use-dot"></div><div class="use-text">General truths &amp; facts — <em>Water boils at 100°C.</em></div></div>
-      <div class="use-item"><div class="use-dot"></div><div class="use-text">Fixed schedules — <em>The exam starts at 9 a.m.</em></div></div>
-      <div class="divider"></div>
-      <div class="uses-heading">Signal Words</div>
-      <div class="signal-words">
-        <span class="signal-tag">always</span><span class="signal-tag">usually</span><span class="signal-tag">often</span><span class="signal-tag">every day</span><span class="signal-tag">never</span><span class="signal-tag">sometimes</span>
-      </div>
-      <div class="trap-box">
-        <div class="trap-label">⚠ French Speaker Trap</div>
-        <div class="trap-row trap-wrong">✗ I am eating breakfast every day.</div>
-        <div class="trap-row trap-right">✓ I eat breakfast every day.</div>
-        <div style="font-size:14px;color:var(--muted);margin-top:6px;">Habitual actions require simple present, never continuous.</div>
-      </div>
-    </div>
-  </div>
+  <div class="grid" id="pages-grid">
 
-  <!-- 2 -->
-  <div class="card present">
-    <div class="card-header" onclick="toggle(this)">
-      <div class="card-number">2</div>
-      <div class="card-title-area">
-        <div class="card-name">Present Continuous</div>
-        <div class="card-structure"><span>am/is/are</span> + verb‑<span>ing</span></div>
+    <!-- ── CARD 01 ─────────────────────────────────────────── -->
+    <a class="card" href="12tenses.html">
+      <p class="card-num">01</p>
+      <p class="card-title">12 Tenses in English</p>
+      <p class="card-desc">This page is to show the 12 tenses in English.</p>
+      <div class="card-footer">
+        <span class="card-tag">tag</span>
+        <div class="card-arrow">&#x2197;</div>
       </div>
-      <div class="card-toggle">▾</div>
-    </div>
-    <div class="card-body">
-      <div class="uses-heading">Primary Uses</div>
-      <div class="use-item"><div class="use-dot"></div><div class="use-text">Actions happening right now — <em>I am studying this tense.</em></div></div>
-      <div class="use-item"><div class="use-dot"></div><div class="use-text">Temporary situations — <em>She is living in New York this semester.</em></div></div>
-      <div class="use-item"><div class="use-dot"></div><div class="use-text">Confirmed future plans — <em>We are meeting tomorrow.</em></div></div>
-      <div class="divider"></div>
-      <div class="uses-heading">Signal Words</div>
-      <div class="signal-words">
-        <span class="signal-tag">now</span><span class="signal-tag">right now</span><span class="signal-tag">at the moment</span><span class="signal-tag">currently</span><span class="signal-tag">this week</span>
-      </div>
-      <div class="trap-box">
-        <div class="trap-label">⚠ Stative Verbs — Never Continuous</div>
-        <div style="font-size:14px;color:var(--slate);margin-bottom:8px;">know · believe · want · need · love · hate · own · understand · see · hear</div>
-        <div class="trap-row trap-wrong">✗ I am knowing the answer.</div>
-        <div class="trap-row trap-right">✓ I know the answer.</div>
-      </div>
-    </div>
-  </div>
+    </a>
 
-  <!-- 3 -->
-  <div class="card present">
-    <div class="card-header" onclick="toggle(this)">
-      <div class="card-number">3</div>
-      <div class="card-title-area">
-        <div class="card-name">Present Perfect</div>
-        <div class="card-structure"><span>have/has</span> + past participle</div>
+      <!-- ── CARD 02 ─────────────────────────────────────────── -->
+    <a class="card" href="glory_app_backlog.html">
+      <p class="card-num">02</p>
+      <p class="card-title">Glory App Backlog</p>
+      <p class="card-desc">This page contains the backlog of features and improvements for the Glory app.</p>
+      <div class="card-footer">
+        <span class="card-tag">tag</span>
+        <div class="card-arrow">&#x2197;</div>
       </div>
-      <div class="card-toggle">▾</div>
-    </div>
-    <div class="card-body">
-      <div class="uses-heading">Primary Uses</div>
-      <div class="use-item"><div class="use-dot"></div><div class="use-text">Past action with present relevance — <em>I have lost my passport.</em> (still missing)</div></div>
-      <div class="use-item"><div class="use-dot"></div><div class="use-text">Life experiences, no specific time — <em>She has visited Japan.</em></div></div>
-      <div class="use-item"><div class="use-dot"></div><div class="use-text">Action started in past, continuing now — <em>I have lived here for five years.</em></div></div>
-      <div class="divider"></div>
-      <div class="uses-heading">Signal Words</div>
-      <div class="signal-words">
-        <span class="signal-tag">already</span><span class="signal-tag">yet</span><span class="signal-tag">ever</span><span class="signal-tag">never</span><span class="signal-tag">for</span><span class="signal-tag">since</span><span class="signal-tag">just</span><span class="signal-tag">recently</span>
-      </div>
-      <div class="trap-box">
-        <div class="trap-label">⚠ Your Highest-Risk Error (passé composé confusion)</div>
-        <div style="font-size:14px;color:var(--slate);margin-bottom:8px;"><strong>Rule:</strong> Specific past time = Simple Past. No specific time = Present Perfect.</div>
-        <div class="trap-row trap-wrong">✗ I have finished the test yesterday.</div>
-        <div class="trap-row trap-right">✓ I finished the test yesterday.</div>
-        <div class="trap-row trap-wrong" style="margin-top:6px;">✗ I already saw this film.</div>
-        <div class="trap-row trap-right">✓ I have already seen this film.</div>
-      </div>
-    </div>
-  </div>
+    </a>
+  
 
-  <!-- 4 -->
-  <div class="card present">
-    <div class="card-header" onclick="toggle(this)">
-      <div class="card-number">4</div>
-      <div class="card-title-area">
-        <div class="card-name">Present Perfect Continuous</div>
-        <div class="card-structure"><span>have/has been</span> + verb‑<span>ing</span></div>
-      </div>
-      <div class="card-toggle">▾</div>
+    <!-- ── PLACEHOLDER (remove when you have enough pages) ─── -->
+    <div class="card empty">
+      <p class="card-title">+ Add a new page here</p>
     </div>
-    <div class="card-body">
-      <div class="uses-heading">Primary Uses</div>
-      <div class="use-item"><div class="use-dot"></div><div class="use-text">Ongoing action from past to now, emphasizing duration — <em>I have been studying English for three years.</em></div></div>
-      <div class="use-item"><div class="use-dot"></div><div class="use-text">Recent activity with visible present result — <em>She has been crying.</em> (her eyes are red)</div></div>
-      <div class="divider"></div>
-      <div class="uses-heading">Signal Words</div>
-      <div class="signal-words">
-        <span class="signal-tag">for</span><span class="signal-tag">since</span><span class="signal-tag">all day</span><span class="signal-tag">all week</span><span class="signal-tag">how long</span>
-      </div>
-      <div class="trap-box">
-        <div class="trap-label">Key Distinction vs. Present Perfect</div>
-        <div class="trap-row" style="color:var(--slate);">→ <em>I have read that book.</em> — focus on the <strong>result</strong> (finished)</div>
-        <div class="trap-row" style="color:var(--slate);margin-top:4px;">→ <em>I have been reading that book.</em> — focus on the <strong>ongoing process</strong></div>
-      </div>
-    </div>
-  </div>
-</div>
 
-<!-- ═══════════════════ PAST ═══════════════════ -->
-<div class="time-section past" id="section-past">
-  <div class="time-heading">
-    <div class="time-rule"></div>
-    <h2>Past</h2>
-    <div class="time-rule"></div>
-  </div>
+  </div><!-- /grid -->
 
-  <!-- 5 -->
-  <div class="card past">
-    <div class="card-header" onclick="toggle(this)">
-      <div class="card-number">5</div>
-      <div class="card-title-area">
-        <div class="card-name">Simple Past</div>
-        <div class="card-structure">subject + <span>past form</span> (regular: +<span>‑ed</span> / irregular: varies)</div>
-      </div>
-      <div class="card-toggle">▾</div>
-    </div>
-    <div class="card-body">
-      <div class="uses-heading">Primary Uses</div>
-      <div class="use-item"><div class="use-dot"></div><div class="use-text">Completed action at a specific past time — <em>He graduated in 2021.</em></div></div>
-      <div class="use-item"><div class="use-dot"></div><div class="use-text">Sequence of past events — <em>She woke up, showered, and left.</em></div></div>
-      <div class="divider"></div>
-      <div class="uses-heading">Signal Words</div>
-      <div class="signal-words">
-        <span class="signal-tag">yesterday</span><span class="signal-tag">last year</span><span class="signal-tag">in 2020</span><span class="signal-tag">ago</span><span class="signal-tag">then</span><span class="signal-tag">when</span>
-      </div>
-      <div class="divider"></div>
-      <div class="uses-heading">Key Irregular Verbs</div>
-      <table style="margin-top:8px;font-size:14px;">
-        <thead><tr><th style="background:var(--past)">Base</th><th style="background:var(--past)">Simple Past</th><th style="background:var(--past)">Past Participle</th></tr></thead>
-        <tbody>
-          <tr><td>go</td><td>went</td><td>gone</td></tr>
-          <tr><td>write</td><td>wrote</td><td>written</td></tr>
-          <tr><td>speak</td><td>spoke</td><td>spoken</td></tr>
-          <tr><td>see</td><td>saw</td><td>seen</td></tr>
-          <tr><td>take</td><td>took</td><td>taken</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+  <!-- ══════════ FOOTER ══════════════════════════════════════ -->
+  <footer>
+    <p>My Pages &mdash; Local Collection</p>
+    <p>Last updated <span id="date"></span></p>
+  </footer>
 
-  <!-- 6 -->
-  <div class="card past">
-    <div class="card-header" onclick="toggle(this)">
-      <div class="card-number">6</div>
-      <div class="card-title-area">
-        <div class="card-name">Past Continuous</div>
-        <div class="card-structure"><span>was/were</span> + verb‑<span>ing</span></div>
-      </div>
-      <div class="card-toggle">▾</div>
-    </div>
-    <div class="card-body">
-      <div class="uses-heading">Primary Uses</div>
-      <div class="use-item"><div class="use-dot"></div><div class="use-text">Action in progress at a specific past moment — <em>At 8 p.m., I was writing my essay.</em></div></div>
-      <div class="use-item"><div class="use-dot"></div><div class="use-text">Background action interrupted by another — <em>I was studying when she called.</em></div></div>
-      <div class="divider"></div>
-      <div class="uses-heading">Signal Words</div>
-      <div class="signal-words">
-        <span class="signal-tag">while</span><span class="signal-tag">when</span><span class="signal-tag">at that moment</span><span class="signal-tag">all day</span>
-      </div>
-      <div class="trap-box">
-        <div class="trap-label">Key Pattern</div>
-        <div style="color:var(--slate);font-size:15px;"><em>While</em> + past continuous + <em>,</em> + simple past</div>
-        <div style="color:var(--slate);font-size:15px;margin-top:4px;"><em>While I was cooking, the phone rang.</em></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 7 -->
-  <div class="card past">
-    <div class="card-header" onclick="toggle(this)">
-      <div class="card-number">7</div>
-      <div class="card-title-area">
-        <div class="card-name">Past Perfect</div>
-        <div class="card-structure"><span>had</span> + past participle</div>
-      </div>
-      <div class="card-toggle">▾</div>
-    </div>
-    <div class="card-body">
-      <div class="uses-heading">Primary Uses</div>
-      <div class="use-item"><div class="use-dot"></div><div class="use-text">The action that happened <strong>first</strong> when narrating two past events — <em>When I arrived, the lecture had already started.</em></div></div>
-      <div class="use-item"><div class="use-dot"></div><div class="use-text">Unmet past conditions — <em>She had never seen snow before she moved to Canada.</em></div></div>
-      <div class="divider"></div>
-      <div class="uses-heading">Signal Words</div>
-      <div class="signal-words">
-        <span class="signal-tag">already</span><span class="signal-tag">before</span><span class="signal-tag">when</span><span class="signal-tag">by the time</span><span class="signal-tag">after</span>
-      </div>
-      <div class="trap-box">
-        <div class="trap-label">⚠ Do Not Overuse</div>
-        <div style="font-size:14px;color:var(--slate);">Use past perfect only when the sequence of two past events must be made unambiguous. When <em>before</em> or <em>after</em> already makes the order clear, simple past is often acceptable.</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 8 -->
-  <div class="card past">
-    <div class="card-header" onclick="toggle(this)">
-      <div class="card-number">8</div>
-      <div class="card-title-area">
-        <div class="card-name">Past Perfect Continuous</div>
-        <div class="card-structure"><span>had been</span> + verb‑<span>ing</span></div>
-      </div>
-      <div class="card-toggle">▾</div>
-    </div>
-    <div class="card-body">
-      <div class="uses-heading">Primary Uses</div>
-      <div class="use-item"><div class="use-dot"></div><div class="use-text">An ongoing past action that preceded another past event, emphasizing duration — <em>He had been waiting for two hours before the doctor saw him.</em></div></div>
-      <div class="use-item"><div class="use-dot"></div><div class="use-text"><em>They had been arguing all night before they finally agreed.</em></div></div>
-      <div class="divider"></div>
-      <div class="uses-heading">Signal Words</div>
-      <div class="signal-words">
-        <span class="signal-tag">for</span><span class="signal-tag">since</span><span class="signal-tag">before</span><span class="signal-tag">when</span><span class="signal-tag">by the time</span>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════ FUTURE ═══════════════════ -->
-<div class="time-section future" id="section-future">
-  <div class="time-heading">
-    <div class="time-rule"></div>
-    <h2>Future</h2>
-    <div class="time-rule"></div>
-  </div>
-
-  <!-- 9 -->
-  <div class="card future">
-    <div class="card-header" onclick="toggle(this)">
-      <div class="card-number">9</div>
-      <div class="card-title-area">
-        <div class="card-name">Simple Future</div>
-        <div class="card-structure"><span>will</span> + base verb &nbsp;|&nbsp; <span>be going to</span> + base verb</div>
-      </div>
-      <div class="card-toggle">▾</div>
-    </div>
-    <div class="card-body">
-      <div class="uses-heading">Will — Uses</div>
-      <div class="use-item"><div class="use-dot"></div><div class="use-text">Spontaneous decisions — <em>I'll help you with that.</em></div></div>
-      <div class="use-item"><div class="use-dot"></div><div class="use-text">Predictions based on opinion — <em>I think technology will change education.</em></div></div>
-      <div class="use-item"><div class="use-dot"></div><div class="use-text">Promises &amp; offers — <em>I will call you tomorrow.</em></div></div>
-      <div class="divider"></div>
-      <div class="uses-heading">Be Going To — Uses</div>
-      <div class="use-item"><div class="use-dot"></div><div class="use-text">Pre-decided plans — <em>I am going to apply for a scholarship.</em></div></div>
-      <div class="use-item"><div class="use-dot"></div><div class="use-text">Predictions based on present evidence — <em>Look at those clouds — it is going to rain.</em></div></div>
-      <div class="divider"></div>
-      <div class="uses-heading">Signal Words</div>
-      <div class="signal-words">
-        <span class="signal-tag">tomorrow</span><span class="signal-tag">next week</span><span class="signal-tag">soon</span><span class="signal-tag">in the future</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- 10 -->
-  <div class="card future">
-    <div class="card-header" onclick="toggle(this)">
-      <div class="card-number">10</div>
-      <div class="card-title-area">
-        <div class="card-name">Future Continuous</div>
-        <div class="card-structure"><span>will be</span> + verb‑<span>ing</span></div>
-      </div>
-      <div class="card-toggle">▾</div>
-    </div>
-    <div class="card-body">
-      <div class="uses-heading">Primary Uses</div>
-      <div class="use-item"><div class="use-dot"></div><div class="use-text">Action that will be in progress at a specific future moment — <em>At this time tomorrow, I will be sitting the TOEFL exam.</em></div></div>
-      <div class="use-item"><div class="use-dot"></div><div class="use-text"><em>This time next year, she will be living in Boston.</em></div></div>
-      <div class="divider"></div>
-      <div class="uses-heading">Signal Words</div>
-      <div class="signal-words">
-        <span class="signal-tag">at this time tomorrow</span><span class="signal-tag">this time next year</span><span class="signal-tag">still</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- 11 -->
-  <div class="card future">
-    <div class="card-header" onclick="toggle(this)">
-      <div class="card-number">11</div>
-      <div class="card-title-area">
-        <div class="card-name">Future Perfect</div>
-        <div class="card-structure"><span>will have</span> + past participle</div>
-      </div>
-      <div class="card-toggle">▾</div>
-    </div>
-    <div class="card-body">
-      <div class="uses-heading">Primary Uses</div>
-      <div class="use-item"><div class="use-dot"></div><div class="use-text">Action completed before a specific future point — <em>By December, I will have finished all my applications.</em></div></div>
-      <div class="use-item"><div class="use-dot"></div><div class="use-text"><em>She will have graduated before the project ends.</em></div></div>
-      <div class="divider"></div>
-      <div class="uses-heading">Signal Words</div>
-      <div class="signal-words">
-        <span class="signal-tag">by</span><span class="signal-tag">by the time</span><span class="signal-tag">before</span><span class="signal-tag">by next year</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- 12 -->
-  <div class="card future">
-    <div class="card-header" onclick="toggle(this)">
-      <div class="card-number">12</div>
-      <div class="card-title-area">
-        <div class="card-name">Future Perfect Continuous</div>
-        <div class="card-structure"><span>will have been</span> + verb‑<span>ing</span></div>
-      </div>
-      <div class="card-toggle">▾</div>
-    </div>
-    <div class="card-body">
-      <div class="uses-heading">Primary Uses</div>
-      <div class="use-item"><div class="use-dot"></div><div class="use-text">Duration of an action still ongoing at a future point — <em>By next month, I will have been studying English for two years.</em></div></div>
-      <div class="use-item"><div class="use-dot"></div><div class="use-text"><em>When she retires, she will have been teaching for thirty years.</em></div></div>
-      <div class="divider"></div>
-      <div class="uses-heading">Signal Words</div>
-      <div class="signal-words">
-        <span class="signal-tag">by</span><span class="signal-tag">for</span><span class="signal-tag">when</span><span class="signal-tag">by the time</span>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════ SUMMARY TABLE ═══════════════════ -->
-<div class="summary-section">
-  <div class="summary-title">Quick Reference Table</div>
-  <table>
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Tense</th>
-        <th>Structure</th>
-        <th>Signal Words</th>
-        <th>Core Idea</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td class="t-num t-present">1</td><td class="t-name">Simple Present</td><td class="t-signal">do / does</td><td class="t-signal">every day, always</td><td class="t-core">habit, fact</td></tr>
-      <tr><td class="t-num t-present">2</td><td class="t-name">Present Continuous</td><td class="t-signal">am/is/are + ‑ing</td><td class="t-signal">now, currently</td><td class="t-core">in progress now</td></tr>
-      <tr><td class="t-num t-present">3</td><td class="t-name">Present Perfect</td><td class="t-signal">have/has + pp</td><td class="t-signal">already, yet, for, since</td><td class="t-core">past → present link</td></tr>
-      <tr><td class="t-num t-present">4</td><td class="t-name">Present Perfect Cont.</td><td class="t-signal">have/has been + ‑ing</td><td class="t-signal">for, since, all day</td><td class="t-core">ongoing duration</td></tr>
-      <tr><td class="t-num t-past">5</td><td class="t-name">Simple Past</td><td class="t-signal">‑ed / irregular</td><td class="t-signal">yesterday, ago, in 2020</td><td class="t-core">completed past</td></tr>
-      <tr><td class="t-num t-past">6</td><td class="t-name">Past Continuous</td><td class="t-signal">was/were + ‑ing</td><td class="t-signal">while, at that moment</td><td class="t-core">in progress in past</td></tr>
-      <tr><td class="t-num t-past">7</td><td class="t-name">Past Perfect</td><td class="t-signal">had + pp</td><td class="t-signal">already, before, when</td><td class="t-core">first of two past actions</td></tr>
-      <tr><td class="t-num t-past">8</td><td class="t-name">Past Perfect Cont.</td><td class="t-signal">had been + ‑ing</td><td class="t-signal">for, since, before</td><td class="t-core">duration before past event</td></tr>
-      <tr><td class="t-num t-future">9</td><td class="t-name">Simple Future</td><td class="t-signal">will / be going to</td><td class="t-signal">tomorrow, next week</td><td class="t-core">prediction, decision</td></tr>
-      <tr><td class="t-num t-future">10</td><td class="t-name">Future Continuous</td><td class="t-signal">will be + ‑ing</td><td class="t-signal">at this time tomorrow</td><td class="t-core">in progress in future</td></tr>
-      <tr><td class="t-num t-future">11</td><td class="t-name">Future Perfect</td><td class="t-signal">will have + pp</td><td class="t-signal">by, before</td><td class="t-core">completed before future point</td></tr>
-      <tr><td class="t-num t-future">12</td><td class="t-name">Future Perfect Cont.</td><td class="t-signal">will have been + ‑ing</td><td class="t-signal">by, for, when</td><td class="t-core">duration up to future point</td></tr>
-    </tbody>
-  </table>
-</div>
-
-</main>
+</div><!-- /wrapper -->
 
 <script>
-  function toggle(header) {
-    const body = header.parentElement.querySelector('.card-body');
-    const arrow = header.querySelector('.card-toggle');
-    body.classList.toggle('open');
-    arrow.classList.toggle('open');
-  }
-
-  function filter(type, btn) {
-    document.querySelectorAll('.nav-btn').forEach(b => {
-      b.className = 'nav-btn';
-    });
-    if (type === 'all') {
-      btn.classList.add('active-all');
-      document.getElementById('section-present').classList.remove('hidden');
-      document.getElementById('section-past').classList.remove('hidden');
-      document.getElementById('section-future').classList.remove('hidden');
-    } else {
-      btn.classList.add('active-' + type);
-      ['present','past','future'].forEach(t => {
-        const el = document.getElementById('section-' + t);
-        el.classList.toggle('hidden', t !== type);
-      });
-    }
-  }
+  // Auto-fill today's date in the footer
+  document.getElementById('date').textContent =
+    new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 </script>
 </body>
 </html>

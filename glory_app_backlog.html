@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glory Devotional App — Product Backlog</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal: #0d7377;
+    --teal-light: #14a085;
+    --teal-pale: #e8f5f4;
+    --dark: #0f1a1c;
+    --mid: #1e2e30;
+    --slate: #3a5155;
+    --muted: #6b8a8e;
+    --off-white: #f5f0e8;
+    --cream: #faf7f2;
+    --gold: #c9a84c;
+    --red: #c0392b;
+    --green: #1a7a4a;
+    --tag-bg: #e0eded;
+
+    --p1: #c0392b;
+    --p2: #d68910;
+    --p3: #1a7a4a;
+    --p4: #6b8a8e;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'IBM Plex Sans', sans-serif;
+    background: var(--cream);
+    color: var(--dark);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--dark);
+    color: var(--off-white);
+    padding: 40px 48px 32px;
+    border-bottom: 3px solid var(--teal);
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    right: -60px; bottom: -60px;
+    width: 260px; height: 260px;
+    background: var(--teal);
+    opacity: .08;
+    border-radius: 50%;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    right: 40px; bottom: -30px;
+    width: 140px; height: 140px;
+    background: var(--teal);
+    opacity: .14;
+    border-radius: 50%;
+  }
+  .header-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--teal-light);
+    margin-bottom: 10px;
+  }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.6rem;
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  header h1 span { color: var(--teal-light); }
+  .header-meta {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 12px;
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .header-meta strong { color: var(--off-white); }
+
+  /* TOOLBAR */
+  .toolbar {
+    background: var(--mid);
+    padding: 14px 48px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid #263638;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .toolbar-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-right: 4px;
+  }
+  .filter-btn {
+    background: transparent;
+    border: 1px solid #3a5155;
+    color: var(--off-white);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 12px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .filter-btn:hover { border-color: var(--teal-light); color: var(--teal-light); }
+  .filter-btn.active { background: var(--teal); border-color: var(--teal); color: #fff; }
+
+  .stats-bar {
+    margin-left: auto;
+    display: flex;
+    gap: 16px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .stats-bar span strong { color: var(--teal-light); }
+
+  /* MAIN */
+  main { padding: 32px 48px 64px; max-width: 1200px; margin: 0 auto; }
+
+  /* EPIC */
+  .epic {
+    margin-bottom: 40px;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid #ddd;
+  }
+  .epic-header {
+    background: var(--dark);
+    color: var(--off-white);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .epic-header:hover { background: var(--mid); }
+  .epic-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--teal-light);
+    letter-spacing: 1px;
+    flex-shrink: 0;
+  }
+  .epic-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    flex: 1;
+  }
+  .epic-icon {
+    font-size: 1.3rem;
+    margin-right: 6px;
+  }
+  .epic-count {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .epic-toggle { color: var(--teal-light); font-size: 18px; transition: transform .25s; }
+  .epic.collapsed .epic-toggle { transform: rotate(-90deg); }
+
+  .story-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+  }
+  .story-table th {
+    background: var(--teal-pale);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--slate);
+    padding: 10px 16px;
+    text-align: left;
+    border-bottom: 2px solid #cde3e2;
+  }
+  .story-table tr { border-bottom: 1px solid #eee; transition: background .15s; }
+  .story-table tbody tr:hover { background: var(--teal-pale); }
+  .story-table td { padding: 12px 16px; vertical-align: top; }
+
+  .story-id {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .story-text {
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--dark);
+  }
+  .story-text .as-a {
+    font-size: 11px;
+    color: var(--muted);
+    font-style: italic;
+    display: block;
+    margin-bottom: 3px;
+  }
+
+  .priority-badge {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+  .p1 { background: #fde8e6; color: var(--p1); border: 1px solid #f5b7b1; }
+  .p2 { background: #fef5e4; color: var(--p2); border: 1px solid #f8c471; }
+  .p3 { background: #e8f5ee; color: var(--p3); border: 1px solid #a9dfbf; }
+  .p4 { background: #f0f4f5; color: var(--p4); border: 1px solid #d0dde0; }
+
+  .sp {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--teal);
+    text-align: center;
+  }
+
+  .phase-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    padding: 2px 8px;
+    border-radius: 10px;
+    white-space: nowrap;
+  }
+  .ph1 { background: #e8d5f5; color: #6c3483; }
+  .ph2 { background: #d5eaf5; color: #1a5276; }
+  .ph3 { background: #d5f5e3; color: #1a6b3a; }
+  .ph4 { background: #fdebd0; color: #784212; }
+
+  .tags { display: flex; gap: 4px; flex-wrap: wrap; }
+  .tag {
+    background: var(--tag-bg);
+    color: var(--slate);
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .col-id { width: 80px; }
+  .col-story { width: auto; }
+  .col-priority { width: 90px; }
+  .col-sp { width: 40px; text-align: center; }
+  .col-phase { width: 90px; }
+  .col-tags { width: 180px; }
+
+  .epic.collapsed .story-table { display: none; }
+
+  /* LEGEND */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin-bottom: 28px;
+    padding: 16px 20px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  .legend-group { display: flex; flex-direction: column; gap: 6px; }
+  .legend-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 2px;
+  }
+  .legend-row { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--slate); }
+
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-label">Product Backlog · v1.0</div>
+  <h1><span>Glory</span> Devotional App</h1>
+  <p style="color:var(--muted);font-size:14px;margin-top:6px;">Tabernacle de Gloire (TG) · Bible Reading & Devotion Platform</p>
+  <div class="header-meta">
+    <span><strong>Total Stories</strong> <span id="total-count">—</span></span>
+    <span><strong>Total Points</strong> <span id="total-sp">—</span></span>
+    <span><strong>Phases</strong> 3 (MVP → Growth → Scale)</span>
+    <span><strong>Languages</strong> EN · FR · HT · ES</span>
+  </div>
+</header>
+
+<div class="toolbar">
+  <span class="toolbar-label">Filter</span>
+  <button class="filter-btn active" data-filter="all">All</button>
+  <button class="filter-btn" data-filter="p1">🔴 Critical</button>
+  <button class="filter-btn" data-filter="p2">🟡 High</button>
+  <button class="filter-btn" data-filter="p3">🟢 Medium</button>
+  <button class="filter-btn" data-filter="p4">⚪ Low</button>
+  <button class="filter-btn" data-filter="ph1">Phase 1</button>
+  <button class="filter-btn" data-filter="ph2">Phase 2</button>
+  <button class="filter-btn" data-filter="ph3">Phase 3</button>
+
+  <div class="stats-bar">
+    <span>Visible: <strong id="visible-count">—</strong></span>
+    <span>Points: <strong id="visible-sp">—</strong></span>
+  </div>
+</div>
+
+<main>
+
+<div class="legend">
+  <div class="legend-group">
+    <div class="legend-title">Priority</div>
+    <div class="legend-row"><span class="priority-badge p1">P1</span> Critical / Must Have</div>
+    <div class="legend-row"><span class="priority-badge p2">P2</span> High / Should Have</div>
+    <div class="legend-row"><span class="priority-badge p3">P3</span> Medium / Could Have</div>
+    <div class="legend-row"><span class="priority-badge p4">P4</span> Low / Nice to Have</div>
+  </div>
+  <div class="legend-group">
+    <div class="legend-title">Phase</div>
+    <div class="legend-row"><span class="phase-badge ph1">Ph.1</span> MVP — Core & Launch</div>
+    <div class="legend-row"><span class="phase-badge ph2">Ph.2</span> Growth — Engagement</div>
+    <div class="legend-row"><span class="phase-badge ph3">Ph.3</span> Scale — Advanced</div>
+
+  </div>
+  <div class="legend-group">
+    <div class="legend-title">SP = Story Points</div>
+    <div class="legend-row">1–2 Small · 3–5 Medium · 8–13 Large</div>
+  </div>
+</div>
+
+<!-- EPIC 1: AUTH -->
+<div class="epic" id="epic-1">
+  <div class="epic-header" onclick="toggleEpic('epic-1')">
+    <span class="epic-num">EPIC 01</span>
+    <span class="epic-icon">🔐</span>
+    <span class="epic-title">Authentication & User Accounts</span>
+    <span class="epic-count">7 stories</span>
+    <span class="epic-toggle">▼</span>
+  </div>
+  <table class="story-table">
+    <thead><tr>
+      <th class="col-id">ID</th>
+      <th class="col-story">User Story</th>
+      <th class="col-priority">Priority</th>
+      <th class="col-sp">SP</th>
+      <th class="col-phase">Phase</th>
+      <th class="col-tags">Tags</th>
+    </tr></thead>
+    <tbody>
+      <tr data-priority="p1" data-phase="ph1">
+        <td class="story-id">US-01</td>
+        <td class="story-text"><span class="as-a">As a new user</span>I can register with my name, email, and password so that I have a personal account in the app.</td>
+        <td><span class="priority-badge p1">P1 Critical</span></td>
+        <td class="sp">5</td>
+        <td><span class="phase-badge ph1">Ph.1</span></td>
+        <td class="tags"><span class="tag">auth</span><span class="tag">backend</span></td>
+      </tr>
+      <tr data-priority="p1" data-phase="ph1">
+        <td class="story-id">US-02</td>
+        <td class="story-text"><span class="as-a">As a registered user</span>I can log in with my email and password so that I can access my personal dashboard.</td>
+        <td><span class="priority-badge p1">P1 Critical</span></td>
+        <td class="sp">3</td>
+        <td><span class="phase-badge ph1">Ph.1</span></td>
+        <td class="tags"><span class="tag">auth</span><span class="tag">backend</span></td>
+      </tr>
+      <tr data-priority="p1" data-phase="ph1">
+        <td class="story-id">US-03</td>
+        <td class="story-text"><span class="as-a">As a user</span>I can reset my password via email so that I can recover access to my account if I forget it.</td>
+        <td><span class="priority-badge p1">P1 Critical</span></td>
+        <td class="sp">3</td>
+        <td><span class="phase-badge ph1">Ph.1</span></td>
+        <td class="tags"><span class="tag">auth</span><span class="tag">email</span></td>
+      </tr>
+      <tr data-priority="p1" data-phase="ph1">
+        <td class="story-id">US-04</td>
+        <td class="story-text"><span class="as-a">As an admin</span>I can assign roles to users (Member HP, HP Facilitator, HP Overseer, Ministry Leader, Senior Leader) so that each person has the correct permissions.</td>
+        <td><span class="priority-badge p1">P1 Critical</span></td>
+        <td class="sp">5</td>
+        <td><span class="phase-badge ph1">Ph.1</span></td>
+        <td class="tags"><span class="tag">roles</span><span class="tag">backend</span></td>
+      </tr>
+      <tr data-priority="p2" data-phase="ph1">
+        <td class="story-id">US-05</td>
+        <td class="story-text"><span class="as-a">As a user</span>I can update my profile (name, photo, HP group, language preference) so that my account stays current.</td>
+        <td><span class="priority-badge p2">P2 High</span></td>
+        <td class="sp">3</td>
+        <td><span class="phase-badge ph1">Ph.1</span></td>
+        <td class="tags"><span class="tag">profile</span><span class="tag">frontend</span></td>
+      </tr>
+      <tr data-priority="p2" data-phase="ph2">
+        <td class="story-id">US-06</td>
+        <td class="story-text"><span class="as-a">As an admin</span>I can bulk-import users via CSV so that onboarding the entire congregation is fast at launch.</td>
+        <td><span class="priority-badge p2">P2 High</span></td>
+        <td class="sp">5</td>
+        <td><span class="phase-badge ph2">Ph.2</span></td>
+        <td class="tags"><span class="tag">admin</span><span class="tag">import</span></td>
+      </tr>
+      <tr data-priority="p3" data-phase="ph3">
+        <td class="story-id">US-07</td>
+        <td class="story-text"><span class="as-a">As a user</span>I can log in with Google so that I can access the app without managing a separate password.</td>
+        <td><span class="priority-badge p3">P3 Medium</span></td>
+        <td class="sp">5</td>
+        <td><span class="phase-badge ph3">Ph.3</span></td>
+        <td class="tags"><span class="tag">auth</span><span class="tag">oauth</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- EPIC 2: READING PLAN -->
+<div class="epic" id="epic-2">
+  <div class="epic-header" onclick="toggleEpic('epic-2')">
+    <span class="epic-num">EPIC 02</span>
+    <span class="epic-icon">📖</span>
+    <span class="epic-title">Bible Reading Plan</span>
+    <span class="epic-count">6 stories</span>
+    <span class="epic-toggle">▼</span>
+  </div>
+  <table class="story-table">
+    <thead><tr>
+      <th class="col-id">ID</th>
+      <th class="col-story">User Story</th>
+      <th class="col-priority">Priority</th>
+      <th class="col-sp">SP</th>
+      <th class="col-phase">Phase</th>
+      <th class="col-tags">Tags</th>
+    </tr></thead>
+    <tbody>
+      <tr data-priority="p1" data-phase="ph1">
+        <td class="story-id">US-08</td>
+        <td class="story-text"><span class="as-a">As a member</span>I can see today's assigned Bible passages on my home screen so that I know exactly what to read each day.</td>
+        <td><span class="priority-badge p1">P1 Critical</span></td>
+        <td class="sp">5</td>
+        <td><span class="phase-badge ph1">Ph.1</span></td>
+        <td class="tags"><span class="tag">reading-plan</span><span class="tag">home</span></td>
+      </tr>
+      <tr data-priority="p1" data-phase="ph1">
+        <td class="story-id">US-09</td>
+        <td class="story-text"><span class="as-a">As a member</span>I can navigate to past and upcoming days in the plan (calendar view) so that I can catch up on missed readings or plan ahead.</td>
+        <td><span class="priority-badge p1">P1 Critical</span></td>
+        <td class="sp">5</td>
+        <td><span class="phase-badge ph1">Ph.1</span></td>
+        <td class="tags"><span class="tag">reading-plan</span><span class="tag">calendar</span></td>
+      </tr>
+      <tr data-priority="p1" data-phase="ph1">
+        <td class="story-id">US-10</td>
+        <td class="story-text"><span class="as-a">As a member</span>I can read the Bible text for the assigned passages directly in the app so that I don't need to switch to another tool.</td>
+        <td><span class="priority-badge p1">P1 Critical</span></td>
+        <td class="sp">8</td>
+        <td><span class="phase-badge ph1">Ph.1</span></td>
+        <td class="tags"><span class="tag">bible-api</span><span class="tag">reading</span></td>
+      </tr>
+      <tr data-priority="p1" data-phase="ph1">
+        <td class="story-id">US-11</td>
+        <td class="story-text"><span class="as-a">As a member</span>I can switch the Bible language (EN, FR, HT, ES) so that I can read in my preferred language.</td>
+        <td><span class="priority-badge p1">P1 Critical</span></td>
+        <td class="sp">5</td>
+        <td><span class="phase-badge ph1">Ph.1</span></td>
+        <td class="tags"><span class="tag">multilingual</span><span class="tag">bible-api</span></td>
+      </tr>
+      <tr data-priority="p2" data-phase="ph1">
+        <td class="story-id">US-12</td>
+        <td class="story-text"><span class="as-a">As an admin</span>I can upload and manage the annual reading plan (JSON/CSV) so that the content is updated each year without code changes.</td>
+        <td><span class="priority-badge p2">P2 High</span></td>
+        <td class="sp">5</td>
+        <td><span class="phase-badge ph1">Ph.1</span></td>
+        <td class="tags"><span class="tag">admin</span><span class="tag">data</span></td>
+      </tr>
+      <tr data-priority="p3" data-phase="ph3">
+        <td class="story-id">US-13</td>
+        <td class="story-text"><span class="as-a">As an admin</span>I can create custom reading plans (e.g. Gospels in 1 month, Torah in 4 months) so that members have flexible study options beyond the annual plan.</td>
+        <td><span class="priority-badge p3">P3 Medium</span></td>
+        <td class="sp">8</td>
+        <td><span class="phase-badge ph3">Ph.3</span></td>
+        <td class="tags"><span class="tag">reading-plan</span><span class="tag">admin</span></td>
+      </tr>
+
+    </tbody>
+  </table>
+</div>
+
+<!-- EPIC 3: DEVOTION SUBMISSION -->
+<div class="epic" id="epic-3">
+  <div class="epic-header" onclick="toggleEpic('epic-3')">
+    <span class="epic-num">EPIC 03</span>
+    <span class="epic-icon">✍️</span>
+    <span class="epic-title">Devotion Submission & Progress Tracking</span>
+    <span class="epic-count">6 stories</span>
+    <span class="epic-toggle">▼</span>
+  </div>
+  <table class="story-table">
+    <thead><tr>
+      <th class="col-id">ID</th>
+      <th class="col-story">User Story</th>
+      <th class="col-priority">Priority</th>
+      <th class="col-sp">SP</th>
+      <th class="col-phase">Phase</th>
+      <th class="col-tags">Tags</th>
+    </tr></thead>
+    <tbody>
+      <tr data-priority="p1" data-phase="ph1">
+        <td class="story-id">US-15</td>
+        <td class="story-text"><span class="as-a">As a member</span>I can mark today's reading as complete so that my progress is recorded and my streak is maintained.</td>
+        <td><span class="priority-badge p1">P1 Critical</span></td>
+        <td class="sp">3</td>
+        <td><span class="phase-badge ph1">Ph.1</span></td>
+        <td class="tags"><span class="tag">progress</span><span class="tag">devotion</span></td>
+      </tr>
+      <tr data-priority="p1" data-phase="ph1">
+        <td class="story-id">US-16</td>
+        <td class="story-text"><span class="as-a">As a member</span>I can write and submit a devotional reflection for the day's passage so that I can journal my spiritual insights and share them with my facilitator.</td>
+        <td><span class="priority-badge p1">P1 Critical</span></td>
+        <td class="sp">5</td>
+        <td><span class="phase-badge ph1">Ph.1</span></td>
+        <td class="tags"><span class="tag">devotion</span><span class="tag">notes</span></td>
+      </tr>
+      <tr data-priority="p1" data-phase="ph1">
+        <td class="story-id">US-17</td>
+        <td class="story-text"><span class="as-a">As a member</span>I can view my personal progress dashboard (% complete, streak, reading history) so that I can stay motivated and visualize my discipline.</td>
+        <td><span class="priority-badge p1">P1 Critical</span></td>
+        <td class="sp">5</td>
+        <td><span class="phase-badge ph1">Ph.1</span></td>
+        <td class="tags"><span class="tag">progress</span><span class="tag">dashboard</span></td>
+      </tr>
+      <tr data-priority="p2" data-phase="ph1">
+        <td class="story-id">US-18</td>
+        <td class="story-text"><span class="as-a">As a member</span>I can highlight a verse and save it as a favourite so that I can quickly revisit impactful verses.</td>
+        <td><span class="priority-badge p2">P2 High</span></td>
+        <td class="sp">3</td>
+        <td><span class="phase-badge ph1">Ph.1</span></td>
+        <td class="tags"><span class="tag">highlights</span><span class="tag">bible</span></td>
+      </tr>
+      <tr data-priority="p2" data-phase="ph2">
+        <td class="story-id">US-19</td>
+        <td class="story-text"><span class="as-a">As a member</span>I can view my reading history month by month so that I can see my consistency over time and identify gaps.</td>
+        <td><span class="priority-badge p2">P2 High</span></td>
+        <td class="sp">3</td>
+        <td><span class="phase-badge ph2">Ph.2</span></td>
+        <td class="tags"><span class="tag">history</span><span class="tag">progress</span></td>
+      </tr>
+      <tr data-priority="p3" data-phase="ph3">
+        <td class="story-id">US-20</td>
+        <td class="story-text"><span class="as-a">As a member</span>I can add inline annotations to Bible verses so that I can capture personal study notes directly on the text.</td>
+        <td><span class="priority-badge p3">P3 Medium</span></td>
+        <td class="sp">8</td>
+        <td><span class="phase-badge ph3">Ph.3</span></td>
+        <td class="tags"><span class="tag">annotations</span><span class="tag">bible</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- EPIC 4: LEADER DASHBOARD -->
+<div class="epic" id="epic-4">
+  <div class="epic-header" onclick="toggleEpic('epic-4')">
+    <span class="epic-num">EPIC 04</span>
+    <span class="epic-icon">📊</span>
+    <span class="epic-title">Leader & Facilitator Dashboard</span>
+    <span class="epic-count">7 stories</span>
+    <span class="epic-toggle">▼</span>
+  </div>
+  <table class="story-table">
+    <thead><tr>
+      <th class="col-id">ID</th>
+      <th class="col-story">User Story</th>
+      <th class="col-priority">Priority</th>
+      <th class="col-sp">SP</th>
+      <th class="col-phase">Phase</th>
+      <th class="col-tags">Tags</th>
+    </tr></thead>
+    <tbody>
+      <tr data-priority="p1" data-phase="ph1">
+        <td class="story-id">US-21</td>
+        <td class="story-text"><span class="as-a">As an HP Facilitator</span>I can see a list of my group members and their reading status for the current day/week so that I can follow up with those who are falling behind.</td>
+        <td><span class="priority-badge p1">P1 Critical</span></td>
+        <td class="sp">5</td>
+        <td><span class="phase-badge ph1">Ph.1</span></td>
+        <td class="tags"><span class="tag">dashboard</span><span class="tag">facilitator</span></td>
+      </tr>
+      <tr data-priority="p1" data-phase="ph1">
+        <td class="story-id">US-22</td>
+        <td class="story-text"><span class="as-a">As an HP Facilitator</span>I can read the devotional submissions of my group members so that I can provide spiritual accompaniment and encouragement.</td>
+        <td><span class="priority-badge p1">P1 Critical</span></td>
+        <td class="sp">3</td>
+        <td><span class="phase-badge ph1">Ph.1</span></td>
+        <td class="tags"><span class="tag">devotion</span><span class="tag">facilitator</span></td>
+      </tr>
+      <tr data-priority="p2" data-phase="ph1">
+        <td class="story-id">US-23</td>
+        <td class="story-text"><span class="as-a">As an HP Overseer</span>I can view engagement statistics for all HP groups under my supervision so that I can identify which groups need additional support.</td>
+        <td><span class="priority-badge p2">P2 High</span></td>
+        <td class="sp">5</td>
+        <td><span class="phase-badge ph1">Ph.1</span></td>
+        <td class="tags"><span class="tag">dashboard</span><span class="tag">overseer</span></td>
+      </tr>
+      <tr data-priority="p2" data-phase="ph2">
+        <td class="story-id">US-24</td>
+        <td class="story-text"><span class="as-a">As a Ministry Leader</span>I can see a church-wide engagement overview with charts (completion rate, active members, streak distribution) so that I can make informed pastoral decisions.</td>
+        <td><span class="priority-badge p2">P2 High</span></td>
+        <td class="sp">8</td>
+        <td><span class="phase-badge ph2">Ph.2</span></td>
+        <td class="tags"><span class="tag">dashboard</span><span class="tag">charts</span><span class="tag">ministry</span></td>
+      </tr>
+      <tr data-priority="p2" data-phase="ph2">
+        <td class="story-id">US-25</td>
+        <td class="story-text"><span class="as-a">As a Senior Leader</span>I can view a top-level report across all ministries and groups so that I have a global picture of congregational engagement with the Word.</td>
+        <td><span class="priority-badge p2">P2 High</span></td>
+        <td class="sp">5</td>
+        <td><span class="phase-badge ph2">Ph.2</span></td>
+        <td class="tags"><span class="tag">dashboard</span><span class="tag">report</span></td>
+      </tr>
+      <tr data-priority="p3" data-phase="ph2">
+        <td class="story-id">US-26</td>
+        <td class="story-text"><span class="as-a">As a Facilitator</span>I can export my group's engagement data to CSV/PDF so that I can share a report at a leadership meeting.</td>
+        <td><span class="priority-badge p3">P3 Medium</span></td>
+        <td class="sp">5</td>
+        <td><span class="phase-badge ph2">Ph.2</span></td>
+        <td class="tags"><span class="tag">export</span><span class="tag">report</span></td>
+      </tr>
+      <tr data-priority="p3" data-phase="ph3">
+        <td class="story-id">US-27</td>
+        <td class="story-text"><span class="as-a">As a Ministry Leader</span>I can manage HP groups (create, rename, reassign members/facilitators) within the app so that the church structure stays up-to-date without contacting a developer.</td>
+        <td><span class="priority-badge p3">P3 Medium</span></td>
+        <td class="sp">5</td>
+        <td><span class="phase-badge ph3">Ph.3</span></td>
+        <td class="tags"><span class="tag">admin</span><span class="tag">groups</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- EPIC 5: NOTIFICATIONS -->
+<div class="epic" id="epic-5">
+  <div class="epic-header" onclick="toggleEpic('epic-5')">
+    <span class="epic-num">EPIC 05</span>
+    <span class="epic-icon">🔔</span>
+    <span class="epic-title">Notifications & Reminders</span>
+    <span class="epic-count">5 stories</span>
+    <span class="epic-toggle">▼</span>
+  </div>
+  <table class="story-table">
+    <thead><tr>
+      <th class="col-id">ID</th>
+      <th class="col-story">User Story</th>
+      <th class="col-priority">Priority</th>
+      <th class="col-sp">SP</th>
+      <th class="col-phase">Phase</th>
+      <th class="col-tags">Tags</th>
+    </tr></thead>
+    <tbody>
+      <tr data-priority="p1" data-phase="ph1">
+        <td class="story-id">US-28</td>
+        <td class="story-text"><span class="as-a">As a member</span>I receive a daily email reminder to complete my devotion so that I stay consistent even when I forget.</td>
+        <td><span class="priority-badge p1">P1 Critical</span></td>
+        <td class="sp">5</td>
+        <td><span class="phase-badge ph1">Ph.1</span></td>
+        <td class="tags"><span class="tag">email</span><span class="tag">notifications</span></td>
+      </tr>
+      <tr data-priority="p2" data-phase="ph1">
+        <td class="story-id">US-29</td>
+        <td class="story-text"><span class="as-a">As a member</span>I can configure my reminder time and frequency so that the notification fits my personal schedule and isn't intrusive.</td>
+        <td><span class="priority-badge p2">P2 High</span></td>
+        <td class="sp">3</td>
+        <td><span class="phase-badge ph1">Ph.1</span></td>
+        <td class="tags"><span class="tag">settings</span><span class="tag">notifications</span></td>
+      </tr>
+      <tr data-priority="p2" data-phase="ph2">
+        <td class="story-id">US-30</td>
+        <td class="story-text"><span class="as-a">As a member</span>I receive a push notification on my mobile browser so that I am reminded even without checking email.</td>
+        <td><span class="priority-badge p2">P2 High</span></td>
+        <td class="sp">5</td>
+        <td><span class="phase-badge ph2">Ph.2</span></td>
+        <td class="tags"><span class="tag">push</span><span class="tag">notifications</span></td>
+      </tr>
+      <tr data-priority="p2" data-phase="ph2">
+        <td class="story-id">US-31</td>
+        <td class="story-text"><span class="as-a">As a Facilitator</span>I can send a group encouragement message to all members of my HP so that I can motivate them during low-engagement periods.</td>
+        <td><span class="priority-badge p2">P2 High</span></td>
+        <td class="sp">5</td>
+        <td><span class="phase-badge ph2">Ph.2</span></td>
+        <td class="tags"><span class="tag">messaging</span><span class="tag">facilitator</span></td>
+      </tr>
+      <tr data-priority="p3" data-phase="ph3">
+        <td class="story-id">US-32</td>
+        <td class="story-text"><span class="as-a">As a member</span>I receive a weekly summary email showing my reading streak, completion rate, and an encouraging verse so that I feel supported in my discipline.</td>
+        <td><span class="priority-badge p3">P3 Medium</span></td>
+        <td class="sp">5</td>
+        <td><span class="phase-badge ph3">Ph.3</span></td>
+        <td class="tags"><span class="tag">email</span><span class="tag">summary</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- EPIC 6: MULTILINGUAL / I18N -->
+<div class="epic" id="epic-6">
+  <div class="epic-header" onclick="toggleEpic('epic-6')">
+    <span class="epic-num">EPIC 06</span>
+    <span class="epic-icon">🌍</span>
+    <span class="epic-title">Multilingual Support (EN · FR · HT · ES)</span>
+    <span class="epic-count">4 stories</span>
+    <span class="epic-toggle">▼</span>
+  </div>
+  <table class="story-table">
+    <thead><tr>
+      <th class="col-id">ID</th>
+      <th class="col-story">User Story</th>
+      <th class="col-priority">Priority</th>
+      <th class="col-sp">SP</th>
+      <th class="col-phase">Phase</th>
+      <th class="col-tags">Tags</th>
+    </tr></thead>
+    <tbody>
+      <tr data-priority="p1" data-phase="ph1">
+        <td class="story-id">US-33</td>
+        <td class="story-text"><span class="as-a">As a user</span>I can choose the app interface language (EN, FR, HT, ES) on sign-up and change it in settings so that I can use the app comfortably in my native language.</td>
+        <td><span class="priority-badge p1">P1 Critical</span></td>
+        <td class="sp">8</td>
+        <td><span class="phase-badge ph1">Ph.1</span></td>
+        <td class="tags"><span class="tag">i18n</span><span class="tag">frontend</span></td>
+      </tr>
+      <tr data-priority="p1" data-phase="ph1">
+        <td class="story-id">US-34</td>
+        <td class="story-text"><span class="as-a">As a user</span>I can read the Bible in all four languages (EN, FR, HT, ES) via the integrated Bible API so that I can study across translations.</td>
+        <td><span class="priority-badge p1">P1 Critical</span></td>
+        <td class="sp">8</td>
+        <td><span class="phase-badge ph1">Ph.1</span></td>
+        <td class="tags"><span class="tag">bible-api</span><span class="tag">multilingual</span></td>
+      </tr>
+      <tr data-priority="p2" data-phase="ph2">
+        <td class="story-id">US-35</td>
+        <td class="story-text"><span class="as-a">As a member</span>I can view email notifications in my preferred language so that communications feel personal and accessible.</td>
+        <td><span class="priority-badge p2">P2 High</span></td>
+        <td class="sp">3</td>
+        <td><span class="phase-badge ph2">Ph.2</span></td>
+        <td class="tags"><span class="tag">email</span><span class="tag">i18n</span></td>
+      </tr>
+      <tr data-priority="p3" data-phase="ph3">
+        <td class="story-id">US-36</td>
+        <td class="story-text"><span class="as-a">As an admin</span>I can view the admin panel and manage content in English so that platform management is unified regardless of members' language preferences.</td>
+        <td><span class="priority-badge p3">P3 Medium</span></td>
+        <td class="sp">2</td>
+        <td><span class="phase-badge ph3">Ph.3</span></td>
+        <td class="tags"><span class="tag">admin</span><span class="tag">i18n</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- EPIC 7: UI / UX -->
+<div class="epic" id="epic-7">
+  <div class="epic-header" onclick="toggleEpic('epic-7')">
+    <span class="epic-num">EPIC 07</span>
+    <span class="epic-icon">📱</span>
+    <span class="epic-title">UI/UX — Responsive Web Interface</span>
+    <span class="epic-count">4 stories</span>
+    <span class="epic-toggle">▼</span>
+  </div>
+  <table class="story-table">
+    <thead><tr>
+      <th class="col-id">ID</th>
+      <th class="col-story">User Story</th>
+      <th class="col-priority">Priority</th>
+      <th class="col-sp">SP</th>
+      <th class="col-phase">Phase</th>
+      <th class="col-tags">Tags</th>
+    </tr></thead>
+    <tbody>
+      <tr data-priority="p1" data-phase="ph1">
+        <td class="story-id">US-37</td>
+        <td class="story-text"><span class="as-a">As a member</span>I can use the app on my phone, tablet, or computer with the same quality experience so that no device is a barrier to my devotion.</td>
+        <td><span class="priority-badge p1">P1 Critical</span></td>
+        <td class="sp">8</td>
+        <td><span class="phase-badge ph1">Ph.1</span></td>
+        <td class="tags"><span class="tag">responsive</span><span class="tag">frontend</span></td>
+      </tr>
+      <tr data-priority="p1" data-phase="ph1">
+        <td class="story-id">US-38</td>
+        <td class="story-text"><span class="as-a">As any user</span>I can navigate the app intuitively regardless of my level of digital literacy so that the app is accessible to all ages in the congregation.</td>
+        <td><span class="priority-badge p1">P1 Critical</span></td>
+        <td class="sp">5</td>
+        <td><span class="phase-badge ph1">Ph.1</span></td>
+        <td class="tags"><span class="tag">accessibility</span><span class="tag">ux</span></td>
+      </tr>
+      <tr data-priority="p2" data-phase="ph2">
+        <td class="story-id">US-39</td>
+        <td class="story-text"><span class="as-a">As a member</span>I can toggle between light and dark mode so that I can read comfortably at any time of day.</td>
+        <td><span class="priority-badge p2">P2 High</span></td>
+        <td class="sp">3</td>
+        <td><span class="phase-badge ph2">Ph.2</span></td>
+        <td class="tags"><span class="tag">ui</span><span class="tag">theming</span></td>
+      </tr>
+      <tr data-priority="p2" data-phase="ph2">
+        <td class="story-id">US-40</td>
+        <td class="story-text"><span class="as-a">As a member</span>I can add the app to my phone's home screen (PWA) so that it feels like a native app without requiring an app store download.</td>
+        <td><span class="priority-badge p2">P2 High</span></td>
+        <td class="sp">5</td>
+        <td><span class="phase-badge ph2">Ph.2</span></td>
+        <td class="tags"><span class="tag">pwa</span><span class="tag">mobile</span></td>
+      </tr>
+
+    </tbody>
+  </table>
+</div>
+
+<!-- EPIC 8: BIBLE INSIGHT -->
+<div class="epic" id="epic-8">
+  <div class="epic-header" onclick="toggleEpic('epic-8')">
+    <span class="epic-num">EPIC 08</span>
+    <span class="epic-icon">💡</span>
+    <span class="epic-title">Bible Insight & Enrichment</span>
+    <span class="epic-count">2 stories</span>
+    <span class="epic-toggle">▼</span>
+  </div>
+  <table class="story-table">
+    <thead><tr>
+      <th class="col-id">ID</th>
+      <th class="col-story">User Story</th>
+      <th class="col-priority">Priority</th>
+      <th class="col-sp">SP</th>
+      <th class="col-phase">Phase</th>
+      <th class="col-tags">Tags</th>
+    </tr></thead>
+    <tbody>
+      <tr data-priority="p3" data-phase="ph3">
+        <td class="story-id">US-42</td>
+        <td class="story-text"><span class="as-a">As a member</span>I can access a "Bible Insight" page that shows an overview of each Bible book (author, theme, key verses, chapter count) so that I better understand what I'm reading in context.</td>
+        <td><span class="priority-badge p3">P3 Medium</span></td>
+        <td class="sp">8</td>
+        <td><span class="phase-badge ph3">Ph.3</span></td>
+        <td class="tags"><span class="tag">bible-insight</span><span class="tag">content</span></td>
+      </tr>
+      <tr data-priority="p3" data-phase="ph3">
+        <td class="story-id">US-43</td>
+        <td class="story-text"><span class="as-a">As a member</span>I can view a structured map of the Bible (Old/New Testament, categories, books, chapters) so that I understand the overall structure of Scripture.</td>
+        <td><span class="priority-badge p3">P3 Medium</span></td>
+        <td class="sp">5</td>
+        <td><span class="phase-badge ph3">Ph.3</span></td>
+        <td class="tags"><span class="tag">bible-insight</span><span class="tag">ui</span></td>
+      </tr>
+
+
+    </tbody>
+  </table>
+</div>
+
+<!-- EPIC 9: INFRASTRUCTURE -->
+<div class="epic" id="epic-9">
+  <div class="epic-header" onclick="toggleEpic('epic-9')">
+    <span class="epic-num">EPIC 09</span>
+    <span class="epic-icon">⚙️</span>
+    <span class="epic-title">Infrastructure, Security & DevOps</span>
+    <span class="epic-count">5 stories</span>
+    <span class="epic-toggle">▼</span>
+  </div>
+  <table class="story-table">
+    <thead><tr>
+      <th class="col-id">ID</th>
+      <th class="col-story">User Story</th>
+      <th class="col-priority">Priority</th>
+      <th class="col-sp">SP</th>
+      <th class="col-phase">Phase</th>
+      <th class="col-tags">Tags</th>
+    </tr></thead>
+    <tbody>
+      <tr data-priority="p1" data-phase="ph1">
+        <td class="story-id">US-46</td>
+        <td class="story-text"><span class="as-a">As a developer</span>I can deploy the app to a secure, performant hosting environment so that users experience fast load times and reliable uptime.</td>
+        <td><span class="priority-badge p1">P1 Critical</span></td>
+        <td class="sp">5</td>
+        <td><span class="phase-badge ph1">Ph.1</span></td>
+        <td class="tags"><span class="tag">devops</span><span class="tag">hosting</span></td>
+      </tr>
+      <tr data-priority="p1" data-phase="ph1">
+        <td class="story-id">US-47</td>
+        <td class="story-text"><span class="as-a">As the system</span>All user data is encrypted at rest and in transit so that member privacy is protected and GDPR/security standards are met.</td>
+        <td><span class="priority-badge p1">P1 Critical</span></td>
+        <td class="sp">5</td>
+        <td><span class="phase-badge ph1">Ph.1</span></td>
+        <td class="tags"><span class="tag">security</span><span class="tag">backend</span></td>
+      </tr>
+      <tr data-priority="p1" data-phase="ph1">
+        <td class="story-id">US-48</td>
+        <td class="story-text"><span class="as-a">As a developer</span>I have a CI/CD pipeline so that code changes are tested and deployed automatically without manual intervention.</td>
+        <td><span class="priority-badge p1">P1 Critical</span></td>
+        <td class="sp">5</td>
+        <td><span class="phase-badge ph1">Ph.1</span></td>
+        <td class="tags"><span class="tag">devops</span><span class="tag">ci-cd</span></td>
+      </tr>
+      <tr data-priority="p2" data-phase="ph2">
+        <td class="story-id">US-49</td>
+        <td class="story-text"><span class="as-a">As a developer</span>I can monitor app errors and performance in real time so that issues are detected and resolved before members are significantly impacted.</td>
+        <td><span class="priority-badge p2">P2 High</span></td>
+        <td class="sp">3</td>
+        <td><span class="phase-badge ph2">Ph.2</span></td>
+        <td class="tags"><span class="tag">monitoring</span><span class="tag">devops</span></td>
+      </tr>
+      <tr data-priority="p2" data-phase="ph2">
+        <td class="story-id">US-50</td>
+        <td class="story-text"><span class="as-a">As the system</span>Database backups run automatically daily so that no user data is ever permanently lost in the event of an incident.</td>
+        <td><span class="priority-badge p2">P2 High</span></td>
+        <td class="sp">3</td>
+        <td><span class="phase-badge ph2">Ph.2</span></td>
+        <td class="tags"><span class="tag">backup</span><span class="tag">database</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+</main>
+
+<script>
+  // Collapse/expand epics
+  function toggleEpic(id) {
+    document.getElementById(id).classList.toggle('collapsed');
+  }
+
+  // Filter logic
+  let activeFilter = 'all';
+
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      applyFilter();
+    });
+  });
+
+  function applyFilter() {
+    const rows = document.querySelectorAll('.story-table tbody tr');
+    let visible = 0, visibleSP = 0;
+
+    rows.forEach(row => {
+      const priority = row.dataset.priority;
+      const phase = row.dataset.phase;
+      const show = activeFilter === 'all' || priority === activeFilter || phase === activeFilter;
+      row.classList.toggle('hidden', !show);
+      if (show) {
+        visible++;
+        // Extract SP from the sp cell
+        const spCell = row.querySelector('.sp');
+        if (spCell) visibleSP += parseInt(spCell.textContent) || 0;
+      }
+    });
+
+    document.getElementById('visible-count').textContent = visible;
+    document.getElementById('visible-sp').textContent = visibleSP;
+
+    // Show/hide epics that have all rows hidden
+    document.querySelectorAll('.epic').forEach(epic => {
+      const visibleRows = epic.querySelectorAll('tbody tr:not(.hidden)');
+      epic.style.display = visibleRows.length === 0 ? 'none' : '';
+    });
+  }
+
+  // Initial count
+  function initCounts() {
+    const allRows = document.querySelectorAll('.story-table tbody tr');
+    let total = 0, totalSP = 0;
+    allRows.forEach(row => {
+      total++;
+      const spCell = row.querySelector('.sp');
+      if (spCell) totalSP += parseInt(spCell.textContent) || 0;
+    });
+    document.getElementById('total-count').textContent = total;
+    document.getElementById('total-sp').textContent = totalSP;
+    document.getElementById('visible-count').textContent = total;
+    document.getElementById('visible-sp').textContent = totalSP;
+  }
+
+  initCounts();
+</script>
+</body>
+</html>
